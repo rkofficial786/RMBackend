@@ -1,6 +1,18 @@
 const mongoose = require("mongoose");
-const { boolean } = require("webidl-conversions");
-
+const completedSchema = new mongoose.Schema({
+  journal: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
+  dedicationLevel: {
+    type: Number,
+    required: true,
+  },
+});
 const taskSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -21,34 +33,8 @@ const taskSchema = new mongoose.Schema({
     },
   },
   repeat: {
-    monday: {
-      type: Boolean,
-      default: false,
-    },
-    tuesday: {
-      type: Boolean,
-      default: false,
-    },
-    wednesday: {
-      type: Boolean,
-      default: false,
-    },
-    thursday: {
-      type: Boolean,
-      default: false,
-    },
-    friday: {
-      type: Boolean,
-      default: false,
-    },
-    saturday: {
-      type: Boolean,
-      default: false,
-    },
-    sunday: {
-      type: Boolean,
-      default: false,
-    },
+    required: true,
+    type:Array
   },
 
   category: {
@@ -70,11 +56,11 @@ const taskSchema = new mongoose.Schema({
     default: 5,
   },
   completed: {
-    type: Boolean,
+    type: [completedSchema],
     default: false,
   },
   overdue: {
-    type: Boolean,
+    type: Array,
     default: false,
   },
 });
