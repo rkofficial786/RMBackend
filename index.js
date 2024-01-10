@@ -1,4 +1,5 @@
 const express = require("express");
+const cron = require("node-cron");
 
 const app = express();
 
@@ -28,7 +29,21 @@ app.use(
     credentials: true,
   })
 );
-
+const task = cron.schedule(
+  "0 0 * * *",
+  async () => {
+    try {
+      const currentDate = new Date().toISOString().slice(0, 10);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  {
+    timezone: "Asia/Kolkata",
+  }
+);
+task.start();
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/task", taskRoutes);
