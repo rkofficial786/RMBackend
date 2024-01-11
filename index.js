@@ -7,7 +7,7 @@ const userRoutes = require("./routes/User");
 const categoryRoutes = require("./routes/Category");
 const taskRoutes = require("./routes/Task");
 const database = require("./config/database");
-const Task = require("../models/Task");
+const Task = require("./models/Task");
 const cookieParser = require("cookie-parser");
 
 const cors = require("cors");
@@ -59,6 +59,11 @@ const task = cron.schedule(
               date: formattedPreviousDate.date,
             },
           },
+          $set:{
+            journal:"",
+            dedicationLevel:5,
+            isCompleted:false
+          }
         }
       );
       await Task.updateMany(

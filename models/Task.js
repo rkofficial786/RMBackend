@@ -67,11 +67,11 @@ const taskSchema = new mongoose.Schema({
   },
   totalCompleted: {
     type: [completedSchema],
-    default: false,
+    default: [],
   },
   totalOverdue: {
     type: [overdueSchema],
-    default: false,
+    default: [],
   },
 });
 

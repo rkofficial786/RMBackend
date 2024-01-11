@@ -17,7 +17,6 @@ exports.getTodayTask = async (req, res) => {
     // Get today's day as a string
     const todayString = daysOfWeek[dayOfWeek];
     const userId = req.user.id;
-    console.log("Today is " + todayString);
     const data=await Task.find({user:userId,repeat: { $in: [todayString] }})
     return res.status(200).json({
       success: true,
