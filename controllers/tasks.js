@@ -37,7 +37,7 @@ exports.createTask = async (req, res) => {
       user: userDetails._id,
       timeRange,
       repeat,
-      category,
+      
       category: categoryDetails._id,
     });
 

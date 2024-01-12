@@ -5,6 +5,7 @@ const app = express();
 const userRoutes = require("./routes/User");
 const categoryRoutes = require("./routes/Category");
 const taskRoutes = require("./routes/Task");
+const goalRoutes = require("./routes/goals");
 const database = require("./config/database");
 const cookieParser = require("cookie-parser");
 
@@ -32,6 +33,7 @@ app.use(
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/task", taskRoutes);
+app.use("/api/v1/goals", goalRoutes);
 
 //rest api
 

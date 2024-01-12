@@ -34,7 +34,7 @@ const taskSchema = new mongoose.Schema({
   },
   repeat: {
     required: true,
-    type:Array
+    type: Array,
   },
 
   category: {
