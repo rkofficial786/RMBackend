@@ -3,6 +3,34 @@ const Task = require("../models/Task");
 const User = require("../models/User");
 const updateTaskOverdueStatus = require("../utils/overdueStatus");
 
+exports.getTodayTask = async (req, res) => {
+  try {
+    // Create a new Date object
+    const today = new Date();
+
+    // Get the day of the week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+    const dayOfWeek = today.getDay();
+
+    // Create an array of weekdays
+    const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    // Get today's day as a string
+    const todayString = daysOfWeek[dayOfWeek];
+    const userId = req.user.id;
+    const data=await Task.find({user:userId,repeat: { $in: [todayString] }})
+    return res.status(200).json({
+      success: true,
+      allTodayTask:data,
+      message: "Task Fetched Successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 exports.createTask = async (req, res) => {
   try {
     const { name, description, timeRange, repeat, category } = req.body;
@@ -37,7 +65,6 @@ exports.createTask = async (req, res) => {
       user: userDetails._id,
       timeRange,
       repeat,
-      
       category: categoryDetails._id,
     });
 
@@ -180,9 +207,20 @@ exports.updateTask = async (req, res) => {
     });
   }
 };
-
+const formatDate = (date) => {
+  const day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+  day = day < 10 ? "0" + day : day;
+  month = month < 10 ? "0" + month : month;
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayOfWeek = daysOfWeek[date.getDay()];
+  return { date: `${day} + "-" + ${month} + "-" + ${year}`, day: dayOfWeek };
+};
 exports.markTaskComplete = async (req, res) => {
   try {
+    const currentDate = new Date();
+    const formattedPreviousDate = formatDate(currentDate);
     const taskId = req.params.id;
     const userId = req.user.id;
 
@@ -215,11 +253,18 @@ exports.markTaskComplete = async (req, res) => {
           journal: journal || "",
           dedicationLevel: dedicationLevel || task.dedicationLevel,
         },
+        $push: {
+          totalCompleted: {
+            journal: journal || "",
+            dedicationLevel: dedicationLevel || task.dedicationLevel,
+            date: formattedPreviousDate.date,
+          },
+        },
       },
       { new: true }
     );
 
-    await updateTaskOverdueStatus(updatedTask);
+    //await updateTaskOverdueStatus(updatedTask);
 
     return res.status(200).json({
       success: true,

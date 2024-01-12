@@ -13,6 +13,12 @@ const completedSchema = new mongoose.Schema({
     required: true,
   },
 });
+const overdueSchema = new mongoose.Schema({
+  date: {
+    type: Date,
+    required: true,
+  }
+});
 const taskSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -55,13 +61,17 @@ const taskSchema = new mongoose.Schema({
     type: Number,
     default: 5,
   },
-  completed: {
-    type: [completedSchema],
+  isCompleted: {
+    type: Boolean,
     default: false,
   },
-  overdue: {
-    type: Array,
-    default: false,
+  totalCompleted: {
+    type: [completedSchema],
+    default: [],
+  },
+  totalOverdue: {
+    type: [overdueSchema],
+    default: [],
   },
 });
 
