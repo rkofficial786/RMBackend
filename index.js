@@ -32,23 +32,25 @@ app.use(
   })
 );
 const formatDate = (date) => {
-  var day = date.getDate();
-  var month = date.getMonth() + 1;
-  var year = date.getFullYear();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
   day = day < 10 ? "0" + day : day;
   month = month < 10 ? "0" + month : month;
-  var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  var dayOfWeek = daysOfWeek[date.getDay()];
-  return { date: `${day} + "-" + ${month} + "-" + ${year}`, day: dayOfWeek };
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayOfWeek = daysOfWeek[date.getDay()];
+  return { date: `${year}-${month}-${day}`, day: dayOfWeek };
 };
 const task = cron.schedule(
-  "0 0 * * *",
+  "* * * * *",
   async () => {
     try {
       const currentDate = new Date();
       let previousDate = new Date(currentDate);
-      previousDate.setDate(currentDate.getDate() - 1);
+      previousDate.setDate(currentDate.getDate());
       const formattedPreviousDate = formatDate(previousDate);
+      console.log(formattedPreviousDate)
+      const post_date=new Date(formattedPreviousDate.date);
       await Task.updateMany(
         {
           isCompleted: false,
@@ -57,7 +59,7 @@ const task = cron.schedule(
         {
           $push: {
             totalOverdue: {
-              date: formattedPreviousDate.date,
+              date: post_date,
             },
           },
           $set:{

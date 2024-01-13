@@ -208,14 +208,14 @@ exports.updateTask = async (req, res) => {
   }
 };
 const formatDate = (date) => {
-  const day = date.getDate();
+  let day = date.getDate();
   let month = date.getMonth() + 1;
   let year = date.getFullYear();
   day = day < 10 ? "0" + day : day;
   month = month < 10 ? "0" + month : month;
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const dayOfWeek = daysOfWeek[date.getDay()];
-  return { date: `${day} + "-" + ${month} + "-" + ${year}`, day: dayOfWeek };
+  return { date: `${year}-${month}-${day}`, day: dayOfWeek };
 };
 exports.markTaskComplete = async (req, res) => {
   try {
@@ -245,11 +245,12 @@ exports.markTaskComplete = async (req, res) => {
     }
 
     // Update task with completed status and optional journal/dedicationLevel
+    const post_date=new Date(formattedPreviousDate.date);
     const updatedTask = await Task.findByIdAndUpdate(
       taskId,
       {
         $set: {
-          completed: true,
+          isCompleted: true,
           journal: journal || "",
           dedicationLevel: dedicationLevel || task.dedicationLevel,
         },
@@ -257,7 +258,7 @@ exports.markTaskComplete = async (req, res) => {
           totalCompleted: {
             journal: journal || "",
             dedicationLevel: dedicationLevel || task.dedicationLevel,
-            date: formattedPreviousDate.date,
+            date: post_date,
           },
         },
       },
