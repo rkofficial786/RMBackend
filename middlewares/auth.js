@@ -44,27 +44,7 @@ exports.auth = async (req, res, next) => {
   }
 }
 
-//student
 
-exports.isUser = async (req, res, next) => {
-  try {
-    if (req.user.accountType !== "User") {
-      return res.status(401).json({
-        success: false,
-        message: "This is a protected route for Users",
-      });
-    }
-    next();
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "User role not verified",
-    });
-  }
-};
-
-//instructor
 
 
 

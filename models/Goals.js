@@ -4,6 +4,7 @@ const journalSchema = new mongoose.Schema({
   date: {
     type: Date,
     required: true,
+    default:Date.now()
   },
   text: {
     type: String,

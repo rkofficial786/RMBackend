@@ -28,7 +28,7 @@ const taskSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  timeRange: {
+  timeRange: { 
     start: {
       type: String,
       required: true,

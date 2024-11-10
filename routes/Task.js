@@ -5,10 +5,10 @@ const router = express.Router();
 
 const { auth } = require("../middlewares/auth");
 
-router.get("/get-task", auth, getTodayTask);
-router.post("/create-task", auth, createTask);
-router.delete("/delete-task/:id", auth, deleteTask);
-router.put("/update-task/:id", auth, updateTask);
+router.get("/", auth, getTodayTask);
+router.post("/", auth, createTask);
+router.delete("/:id", auth, deleteTask);
+router.put("/:id", auth, updateTask);
 router.put("/mark-completed/:id",auth ,markTaskComplete)
 
 module.exports = router;
