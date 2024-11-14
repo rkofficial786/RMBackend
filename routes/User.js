@@ -1,5 +1,6 @@
 // Import the required modules
 const express = require("express");
+
 const router = express.Router();
 
 // Import the required controllers and middleware functions
@@ -9,6 +10,7 @@ const {
   sendOTP,
   changePassword,
 } = require("../controllers/auth");
+const {updateProfile} = require("../controllers/profile")
 // const {
 //   resetPasswordToken,
 //   resetPassword,
@@ -27,7 +29,8 @@ router.post("/login", login);
 
 // Route for user signup
 router.post("/signup", signUp);
-
+//Route for updating profile
+router.put("/updateProfile" , auth , updateProfile);
 // Route for sending OTP to the user's email
 router.post("/sendotp", sendOTP);
 
