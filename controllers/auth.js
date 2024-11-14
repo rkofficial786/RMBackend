@@ -75,17 +75,20 @@ exports.signUp = async (req, res) => {
     const {
       firstName,
       lastName,
+      phone ,
       email,
       password,
-      confirmPassword,
-      accountType,
-      
+      confirmPassword ,
+      accountType, 
       otp,
+      bday
     } = req.body;
     //validate
+
     if (
-      !firstName ||
-      !lastName ||
+      !firstName || 
+      !lastName || 
+      !phone || 
       !email ||
       !password ||
       !confirmPassword ||
@@ -114,9 +117,39 @@ exports.signUp = async (req, res) => {
       });
     }
 
+
+    //Check weather number already used or not 
+    const checkPhoneNumber = async (phone) => {
+      try {
+        if (phone.toString().length > 10) {
+          return res.status(400).json({
+            sucess : false  , 
+            message : "Phone number must be exactly 10 digits"
+          })
+        }
+        const existingUser = await User.findOne({phone}) 
+        return existingUser ? true : false ; 
+      } catch(error) { 
+        throw error ; 
+      }
+    } 
+    const phoneExists  = await checkPhoneNumber(phone)
+    if (phoneExists) {
+      return res.status(400).json({
+        success : false , 
+        message : "The Phone Number Already Exists. try a different number"
+      })
+    }
+
+
+
+
     // Find the most recent OTP for the email
     let response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
-    // console.log("response", response);
+    if(response) {
+      console.log("response", response);
+    }
+
 
     // Check if OTP is still being fetched (wait for a reasonable time)
     let otpFetched = false;
@@ -148,20 +181,23 @@ exports.signUp = async (req, res) => {
 
     let approved = "";
     approved === "Admin" ? (approved = false) : (approved = true);
+
     const user = await User.create({
       firstName,
       lastName,
       email,
-
+      phone ,
       password: hashedPassword,
       accountType: accountType,
       approved: approved,
+      bday
     });
 
     return res.status(200).json({
       success: true,
       message: "User is registered successfully",
-      user,
+      user, 
+
     });
   } catch (error) {
     console.log(error);
@@ -207,7 +243,9 @@ exports.login = async (req, res) => {
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: "7d",
       });
+      //saving token into db 
       user.token = token;
+      await user.save() ; 
       user.password = undefined;
 
       //create cookie
@@ -215,6 +253,9 @@ exports.login = async (req, res) => {
         expires: new Date(Date.now(+3 * 24 * 60 * 60 * 1000)),
         httpOnly: true,
       };
+
+
+
 
       res.cookie("token", token, options).status(200).json({
         success: true,
@@ -261,6 +302,8 @@ exports.sendOTP = async (req, res) => {
       lowerCaseAlphabets: false,
       specialChars: false,
     });
+
+    // console.log(otp)
     const result = await OTP.findOne({ otp: otp });
     // console.log("Result is Generate OTP Func")
     // console.log("OTP", otp)
@@ -331,3 +374,4 @@ exports.changePassword = async (req, res) => {
     });
   }
 };
+

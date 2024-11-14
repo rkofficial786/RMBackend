@@ -17,7 +17,7 @@ exports.getTodayTask = async (req, res) => {
     // Get today's day as a string
     const todayString = daysOfWeek[dayOfWeek];
     const userId = req.user.id;
-    const data=await Task.find({user:userId,repeat: { $in: [todayString] }})
+    const data= await Task.find({user:userId,repeat: { $in: [todayString] }})
     return res.status(200).json({
       success: true,
       allTodayTask:data,
@@ -33,8 +33,8 @@ exports.getTodayTask = async (req, res) => {
 
 exports.createTask = async (req, res) => {
   try {
-    const { name, description, timeRange, repeat, category } = req.body;
-    if (!name || !description || !repeat || !timeRange || !category) {
+    const { name, description, timeRange, repeat, category , priority } = req.body;
+    if (!name || !description || !repeat || !timeRange || !category || !priority) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required" });
@@ -65,6 +65,7 @@ exports.createTask = async (req, res) => {
       user: userDetails._id,
       timeRange,
       repeat,
+      priority , 
       category: categoryDetails._id,
     });
 
@@ -158,6 +159,7 @@ exports.deleteTask = async (req, res) => {
 
 exports.updateTask = async (req, res) => {
   try {
+    
     const taskId = req.params.id;
     const userId = req.user.id;
 
@@ -245,7 +247,7 @@ exports.markTaskComplete = async (req, res) => {
     }
 
     // Update task with completed status and optional journal/dedicationLevel
-    const post_date=new Date(formattedPreviousDate.date);
+    const post_date = new Date(formattedPreviousDate.date);
     const updatedTask = await Task.findByIdAndUpdate(
       taskId,
       {
