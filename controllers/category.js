@@ -1,6 +1,9 @@
 const Category = require("../models/Category");
 const User = require("../models/User");
 
+
+
+
 exports.createCategory = async (req, res) => {
   try {
     const { name } = req.body;
@@ -27,6 +30,10 @@ exports.createCategory = async (req, res) => {
         message: "User Details Not Found",
       });
     }
+
+
+
+
 
     // Create Category and populate the 'email' field with the user details
     const categoryDetails = await Category.create({
